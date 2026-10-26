@@ -47,6 +47,15 @@
         <button id="auth-submit" class="primary-button" type="submit">Entrar al panel <span aria-hidden="true">→</span></button>
         <p id="auth-message" class="auth-message" role="status" aria-live="polite"></p>
       </form>
+      <form id="recovery-form" class="auth-form hidden">
+        <p class="auth-intro">Elige una contraseña nueva para tu cuenta de BENISAT.</p>
+        <label for="new-password">Nueva contraseña</label>
+        <input id="new-password" type="password" autocomplete="new-password" minlength="8" required placeholder="Al menos 8 caracteres">
+        <label for="confirm-password">Repite la contraseña</label>
+        <input id="confirm-password" type="password" autocomplete="new-password" minlength="8" required placeholder="Vuelve a escribirla">
+        <button id="recovery-submit" class="primary-button" type="submit">Guardar contraseña <span aria-hidden="true">→</span></button>
+        <p id="recovery-message" class="auth-message" role="status" aria-live="polite"></p>
+      </form>
       <div class="auth-security"><span class="auth-lock" aria-hidden="true">✓</span><p><strong>Acceso exclusivo al equipo</strong><small>Solo pueden entrar miembros autorizados de BENISAT.</small></p></div>
       <p class="auth-footnote">El registro público está deshabilitado. Si necesitas acceso, contacta con el administrador.</p>
     </section>

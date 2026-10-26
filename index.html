@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#641f32"><meta name="description" content="Panel de control local del equipo BENISAT, CanSat 2026–2027.">
+<title>BENISAT · Panel de control</title>
+<link rel="stylesheet" href="assets/css/app.css">
+<script src="assets/js/app.js" defer></script>
+</head>
+<body>
+<div class="app-shell">
+<aside class="sidebar" id="sidebar">
+  <a class="brand" href="#inicio"><span class="brand-mark">B<span>·</span></span><span class="brand-copy"><strong>BENISAT</strong><small>MISIÓN: DESCUBRIR</small></span></a>
+  <p class="side-label">ESPACIO DE TRABAJO</p>
+  <nav class="main-nav" aria-label="Navegación">
+    <button class="nav-item active" data-view="inicio"><span>⌂</span>Inicio</button>
+    <button class="nav-item" data-view="tareas"><span>☷</span>Tareas <em id="nav-task-count">0</em></button>
+    <button class="nav-item" data-view="hitos"><span>◷</span>Hitos</button>
+    <button class="nav-item" data-view="documentacion"><span>▤</span>Documentación</button>
+    <button class="nav-item" data-view="mision"><span>⌁</span>Misión científica</button>
+    <button class="nav-item" data-view="presupuesto"><span>€</span>Presupuesto</button>
+    <button class="nav-item" data-view="difusion"><span>↗</span>Difusión</button>
+  </nav>
+  <div class="sidebar-footer"><i></i><div><strong>Temporada 2026–2027</strong><small>CanSat · Andalucía</small></div></div>
+</aside>
+<main class="main">
+<header class="topbar"><button id="mobile-menu" class="mobile-menu" aria-label="Abrir navegación">☰</button><div class="breadcrumbs">BENISAT <span>/</span> <strong id="breadcrumb">Inicio</strong></div><div class="topbar-right"><span class="local-label"><i></i> GUARDADO LOCAL</span><span class="avatar">AD</span></div></header>
+
+<section class="view active" id="view-inicio">
+  <div class="page-heading"><div><p class="eyebrow">DE JEREZ AL ESPACIO</p><h1>Panel de control<span>.</span></h1><p class="intro">Toda la misión en un mismo lugar. Planifica, construye, prueba y descubre.</p></div><div class="season"><small>TEMPORADA</small><strong>2026 <b>—</b> 2027</strong><span>Equipo BENISAT</span></div></div>
+  <section class="hero"><div class="hero-text"><span class="hero-kicker">MISIÓN · 01</span><h2>Una pequeña lata.<br>Una gran misión.</h2><p>Diseñar, construir y lanzar un satélite del tamaño de una lata para investigar lo que ocurre durante su descenso.</p><button class="hero-action" data-goto="mision">Explorar la misión <span>↗</span></button></div><div class="space-art" aria-hidden="true"><div class="orbit o1"></div><div class="orbit o2"></div><div class="planet"></div><div class="satellite"><i></i></div><b>✦</b><small>BENISAT / 26—27</small></div></section>
+  <div class="section-heading"><div><p class="eyebrow">VISTA GENERAL</p><h2>Estado del proyecto</h2></div><span class="muted-label">Se actualiza con tu actividad</span></div>
+  <div class="stats-grid">
+    <article class="stat-card"><div class="stat-top"><span>TAREAS ABIERTAS</span><span class="stat-icon">☷</span></div><strong id="stat-open">0</strong><p>por completar</p><footer><span class="dot burgundy"></span>Seguimiento del equipo</footer></article>
+    <article class="stat-card"><div class="stat-top"><span>HITOS REGISTRADOS</span><span class="stat-icon">◷</span></div><strong id="stat-milestones">6</strong><p>fechas de referencia</p><footer><span class="dot gold"></span>Planificación inicial</footer></article>
+    <article class="stat-card"><div class="stat-top"><span>DOCUMENTOS</span><span class="stat-icon">▤</span></div><strong id="stat-docs">0</strong><p>registros guardados</p><footer><span class="dot blue"></span>Entregables técnicos</footer></article>
+    <article class="stat-card"><div class="stat-top"><span>GASTO REGISTRADO</span><span class="stat-icon">€</span></div><strong id="stat-spent">0 €</strong><p>de 500 € de referencia</p><footer><span class="dot green"></span><span id="stat-remaining">500 € disponibles</span></footer></article>
+  </div>
+  <div class="dashboard-grid">
+    <section class="panel"><div class="panel-heading"><div><p class="eyebrow">EN MARCHA</p><h2>Próximas tareas</h2></div><button class="text-link" data-goto="tareas">Ver todas <span>→</span></button></div><form id="quick-task-form" class="quick-form"><input id="quick-task" type="text" maxlength="140" placeholder="Añade una tarea rápida…" aria-label="Nueva tarea" required><button type="submit" aria-label="Añadir tarea">+</button></form><div id="task-preview"></div></section>
+    <section class="panel"><div class="panel-heading"><div><p class="eyebrow">CALENDARIO CANSAT</p><h2>Hitos clave</h2></div><button class="text-link" data-goto="hitos">Ver calendario <span>→</span></button></div><div class="milestone-list" id="milestone-preview"></div><p class="fine-print">Fechas de referencia; verifica siempre la convocatoria oficial de la edición.</p></section>
+  </div>
+  <footer class="app-footer"><span>BENISAT · MISIÓN: DESCUBRIR</span><span>Una pequeña lata. Una gran misión.</span></footer>
+</section>
+
+<section class="view" id="view-tareas">
+  <div class="page-heading compact"><div><p class="eyebrow">ORGANIZACIÓN</p><h1>Tareas<span>.</span></h1><p class="intro">Convierte cada objetivo en un próximo paso concreto.</p></div></div>
+  <section class="panel"><div class="panel-heading"><div><p class="eyebrow">LISTA DE TRABAJO</p><h2>Plan de acción</h2></div><span class="muted-label" id="task-total">0 tareas</span></div>
+  <form id="task-form" class="task-form"><input id="task-title" type="text" maxlength="140" placeholder="¿Qué hay que hacer?" aria-label="Tarea" required><select id="task-priority" aria-label="Prioridad"><option value="media">Prioridad media</option><option value="alta">Prioridad alta</option><option value="baja">Prioridad baja</option></select><select id="task-area" aria-label="Área"><option value="General">Área general</option><option value="Diseño">Diseño</option><option value="Electrónica">Electrónica</option><option value="Programación">Programación</option><option value="Ciencia">Ciencia</option><option value="Documentación">Documentación</option><option value="Difusión">Difusión</option></select><input id="task-due" type="date" aria-label="Fecha límite opcional"><button class="primary-button" type="submit">Añadir tarea +</button></form>
+  <div class="filter-row"><button class="filter-chip selected" data-filter="pendientes">Pendientes</button><button class="filter-chip" data-filter="todas">Todas</button><button class="filter-chip" data-filter="hechas">Completadas</button></div><div id="task-list"></div></section>
+</section>
+
+<section class="view" id="view-hitos">
+  <div class="page-heading compact"><div><p class="eyebrow">CALENDARIO DE LA MISIÓN</p><h1>Hitos y fechas<span>.</span></h1><p class="intro">Organiza las revisiones y los momentos clave del proyecto.</p></div></div>
+  <section class="panel"><div class="panel-heading"><div><p class="eyebrow">TEMPORADA 2026–2027</p><h2>Calendario de referencia</h2></div><button class="text-link" id="add-milestone-btn">Añadir hito +</button></div>
+  <form id="milestone-form" class="task-form hidden"><input id="milestone-title" placeholder="Nombre del hito" maxlength="100" required aria-label="Nombre del hito"><input id="milestone-date" type="date" aria-label="Fecha"><input id="milestone-note" placeholder="Notas (opcional)" maxlength="200" aria-label="Notas"><button class="primary-button" type="submit">Guardar hito</button></form><div class="timeline" id="timeline"></div></section>
+  <p class="fine-print">Fechas trasladadas a partir de la planificación inicial del proyecto; consulta las comunicaciones oficiales para confirmar cambios.</p>
+</section>
+
+<section class="view" id="view-documentacion">
+  <div class="page-heading compact"><div><p class="eyebrow">INGENIERÍA Y ENTREGABLES</p><h1>Documentación<span>.</span></h1><p class="intro">Registra informes, enlaces y evidencias técnicas sin perder sus versiones.</p></div></div>
+  <section class="panel"><div class="panel-heading"><div><p class="eyebrow">ARCHIVO DE MISIÓN</p><h2>Nuevo registro</h2></div></div><form id="doc-form" class="task-form"><input id="doc-title" placeholder="Nombre del documento o evidencia" maxlength="140" required aria-label="Nombre"><select id="doc-type" aria-label="Tipo"><option>PDR</option><option>CDR</option><option>Prueba técnica</option><option>Diseño</option><option>Fotografía</option><option>Acta</option><option>Otro</option></select><select id="doc-status" aria-label="Estado"><option>Pendiente</option><option>En curso</option><option>Revisado</option><option>Finalizado</option></select><input id="doc-url" type="url" placeholder="Enlace al archivo (opcional)" aria-label="Enlace"><button class="primary-button" type="submit">Guardar registro</button></form><div id="documents-list"></div></section>
+  <div class="notice"><strong>Consejo de archivo</strong><p>Guarda los archivos reales en una carpeta organizada de tu ordenador y usa este apartado para registrar el nombre, estado y ruta/enlace. El contenido de los documentos no se sube desde este panel.</p></div>
+</section>
+
+<section class="view" id="view-mision">
+  <div class="page-heading compact"><div><p class="eyebrow">CIENCIA, INGENIERÍA Y FIABILIDAD</p><h1>Misión científica<span>.</span></h1><p class="intro">La misión primaria mide el descenso. La secundaria investiga cómo un sistema puede recuperarse de un fallo electrónico sin intervención humana.</p></div></div>
+
+  <div class="hero mission-hero"><div class="hero-text"><span class="hero-kicker">MISIÓN PRIMARIA · REFERENCIA</span><h2>Medir el descenso.<br>Entender los datos.</h2><p>Registrar temperatura y presión durante el descenso, transmitir telemetría y analizar los resultados. La misión secundaria no modificará estos sensores ni interferirá con sus funciones.</p></div><div class="mission-symbol">°C<br><span>hPa</span></div></div>
+
+  <section class="panel">
+    <div class="panel-heading"><div><p class="eyebrow">MISIÓN SECUNDARIA · AUTONOMOUS CHECK</p><h2>Detectar, conmutar y continuar</h2></div><span class="pill">Diseño inicial</span></div>
+    <p class="mission-lead">Desarrollar y evaluar un sistema de redundancia que detecte un fallo electrónico simulado en un canal de medida auxiliar, active automáticamente un canal de reserva y registre el resultado.</p>
+    <div class="three-cards">
+      <article class="module-card"><span class="module-number">01 / MEDIDA</span><h3>Dos sensores LDR</h3><p>Dos fotorresistencias independientes, cada una con su divisor de tensión y entrada analógica propia del ESP32. El canal A será el principal y el B quedará como respaldo.</p><label>HARDWARE SENCILLO</label></article>
+      <article class="module-card"><span class="module-number">02 / FALLO</span><h3>Inyección electrónica</h3><p>Un circuito de prueba alterará de forma controlada la señal del canal A. La orden de prueba iniciará la incidencia; el supervisor decidirá si debe cambiar al canal B.</p><label>PRUEBA REPETIBLE</label></article>
+      <article class="module-card"><span class="module-number">03 / RECUPERACIÓN</span><h3>Conmutación autónoma</h3><p>El ESP32 identificará la condición de fallo definida, seleccionará el canal de reserva y registrará cuándo se detectó la incidencia y cuándo se recuperó la medida.</p><label>ALGORITMO PROPIO</label></article>
+    </div>
+  </section>
+
+  <div class="dashboard-grid">
+    <section class="panel">
+      <div class="panel-heading"><div><p class="eyebrow">PROTOCOLO EXPERIMENTAL</p><h2>Cómo se probará</h2></div></div>
+      <div class="milestone-list">
+        <article class="milestone-preview"><div class="date-tile"><strong>01</strong><small>BASE</small></div><div class="milestone-copy"><strong>Funcionamiento normal</strong><p>Registrar las lecturas de ambos canales y comprobar que el sistema opera sin fallos inyectados.</p></div></article>
+        <article class="milestone-preview"><div class="date-tile"><strong>02</strong><small>FALLO</small></div><div class="milestone-copy"><strong>Alteración controlada</strong><p>Activar el circuito de prueba para modificar la señal del canal A sin provocar cortocircuitos ni reiniciar el ESP32.</p></div></article>
+        <article class="milestone-preview"><div class="date-tile"><strong>03</strong><small>CAMBIO</small></div><div class="milestone-copy"><strong>Decisión del supervisor</strong><p>El ESP32 detecta la condición de prueba y cambia al canal B sin recibir desde tierra una orden de conmutación.</p></div></article>
+        <article class="milestone-preview"><div class="date-tile"><strong>04</strong><small>DATOS</small></div><div class="milestone-copy"><strong>Registro y análisis</strong><p>Guardar los eventos, repetir las pruebas y comparar tiempos, muestras perdidas y recuperaciones correctas.</p></div></article>
+      </div>
+    </section>
+    <section class="panel">
+      <div class="panel-heading"><div><p class="eyebrow">INDICADORES</p><h2>Qué vamos a medir</h2></div></div>
+      <div class="milestone-list">
+        <article class="milestone-preview"><div class="date-tile"><strong>ms</strong><small>TIEMPO</small></div><div class="milestone-copy"><strong>Tiempo de detección</strong><p>Intervalo entre la inyección del fallo y su identificación por el supervisor.</p></div></article>
+        <article class="milestone-preview"><div class="date-tile"><strong>ms</strong><small>CAMBIO</small></div><div class="milestone-copy"><strong>Tiempo de conmutación</strong><p>Tiempo necesario para pasar del canal A al canal B.</p></div></article>
+        <article class="milestone-preview"><div class="date-tile"><strong>N</strong><small>MUESTRAS</small></div><div class="milestone-copy"><strong>Muestras perdidas</strong><p>Número de lecturas ausentes o inválidas durante la transición.</p></div></article>
+        <article class="milestone-preview"><div class="date-tile"><strong>%</strong><small>ÉXITO</small></div><div class="milestone-copy"><strong>Recuperaciones correctas</strong><p>Porcentaje de ensayos en los que el sistema completa la conmutación prevista.</p></div></article>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel mission-notes">
+    <div class="panel-heading"><div><p class="eyebrow">PLAN DE DESARROLLO</p><h2>Próximos pasos</h2></div></div>
+    <div class="three-cards">
+      <article class="module-card"><span class="module-number">FASE 1</span><h3>Montaje</h3><p>Conectar las dos LDR con divisores independientes y verificar las lecturas analógicas del ESP32.</p><label>PENDIENTE</label></article>
+      <article class="module-card"><span class="module-number">FASE 2</span><h3>Supervisor y fallos</h3><p>Programar la lógica de detección y conmutación; incorporar el circuito de inyección electrónica segura.</p><label>PENDIENTE</label></article>
+      <article class="module-card"><span class="module-number">FASE 3</span><h3>Validación</h3><p>Realizar ensayos repetidos, guardar los resultados y evaluar la integración en el CanSat sin interferir con la misión primaria.</p><label>PENDIENTE</label></article>
+    </div>
+    <p class="fine-print">La simulación demuestra la respuesta ante un fallo controlado concreto; no equivale a garantizar la detección de cualquier avería física. La integración final queda condicionada a la revisión de masa, alimentación, seguridad y normativa CanSat 2026–2027.</p>
+  </section>
+
+  <section class="panel mission-notes"><div class="panel-heading"><div><p class="eyebrow">CUADERNO CIENTÍFICO</p><h2>Notas y observaciones</h2></div></div><form id="note-form" class="note-form"><input id="note-title" placeholder="Título de la observación" maxlength="100" required aria-label="Título"><textarea id="note-body" placeholder="Hipótesis, ensayo, datos o conclusiones…" maxlength="2000" required aria-label="Contenido"></textarea><button class="primary-button" type="submit">Guardar nota</button></form><div id="notes-list"></div></section>
+  <p class="fine-print">Los sensores LDR y el circuito de fallo pertenecen a la misión secundaria experimental. No sustituyen ni modifican los sensores primarios de temperatura y presión. Verifica dimensiones, masa, autonomía, radio y demás requisitos en la normativa oficial.</p>
+</section>
+<section class="view" id="view-presupuesto">
+  <div class="page-heading compact"><div><p class="eyebrow">RECURSOS</p><h1>Presupuesto<span>.</span></h1><p class="intro">Controla compras, aportaciones y gastos de la misión.</p></div></div>
+  <div class="stats-grid budget-stats"><article class="stat-card"><div class="stat-top"><span>LÍMITE DE REFERENCIA</span><span class="stat-icon">€</span></div><strong>500 €</strong><p>Tope de referencia del satélite.</p></article><article class="stat-card"><div class="stat-top"><span>GASTO NETO</span></div><strong id="spent-total">0 €</strong><p>Gastos menos aportaciones.</p></article><article class="stat-card"><div class="stat-top"><span>DISPONIBLE</span></div><strong id="remaining-total">500 €</strong><p>Estimación sobre el límite.</p></article></div>
+  <section class="panel"><div class="panel-heading"><div><p class="eyebrow">CONTROL ECONÓMICO</p><h2>Registrar movimiento</h2></div><button class="text-link" id="export-finance">Exportar CSV ↓</button></div><form id="expense-form" class="task-form"><input id="expense-title" placeholder="Concepto (p. ej., sensores)" maxlength="120" required aria-label="Concepto"><input id="expense-amount" type="number" min="0.01" step="0.01" placeholder="Importe (€)" required aria-label="Importe"><select id="expense-type" aria-label="Tipo"><option value="gasto">Gasto</option><option value="ingreso">Ingreso o aportación</option></select><input id="expense-date" type="date" aria-label="Fecha"><button class="primary-button" type="submit">Registrar</button></form><div id="expenses-list"></div></section>
+  <p class="fine-print">Este control es interno y local; no sustituye la justificación contable del centro.</p>
+</section>
+
+<section class="view" id="view-difusion">
+  <div class="page-heading compact"><div><p class="eyebrow">COMUNICACIÓN</p><h1>Difusión<span>.</span></h1><p class="intro">Cuenta el proceso, comparte avances y acerca la misión a la comunidad.</p></div></div>
+  <div class="three-cards"><article class="module-card"><span class="module-number">01 / REDES</span><h3>Equipo en redes</h3><p>Cuenta oficial del proyecto para comunicar avances, pruebas y resultados.</p><a class="inline-link" href="https://www.instagram.com/equipo.benisat/" target="_blank" rel="noreferrer">Abrir Instagram ↗</a></article><article class="module-card"><span class="module-number">02 / CONTENIDOS</span><h3>Plan editorial</h3><p>Ideas de publicaciones, fotografías del proceso y calendario de difusión.</p><label>POR ORGANIZAR</label></article><article class="module-card"><span class="module-number">03 / COMUNIDAD</span><h3>Divulgación y colaboradores</h3><p>Presentaciones, colaboraciones, patrocinios y actividades de divulgación.</p><label>POR ORGANIZAR</label></article></div>
+  <section class="panel"><div class="panel-heading"><div><p class="eyebrow">PLAN DE PUBLICACIONES</p><h2>Ideas de contenido</h2></div></div><form id="post-form" class="task-form"><input id="post-title" placeholder="Idea o publicación" maxlength="140" required aria-label="Publicación"><select id="post-status" aria-label="Estado"><option>Idea</option><option>Preparando</option><option>Publicado</option></select><input id="post-date" type="date" aria-label="Fecha objetivo"><button class="primary-button" type="submit">Añadir idea</button></form><div id="posts-list"></div></section>
+</section>
+<section class="view" id="view-ajustes">
+<div class="page-heading compact"><div><p class="eyebrow">DATOS Y COPIAS</p><h1>Ajustes<span>.</span></h1><p class="intro">Controla la información guardada en este navegador.</p></div></div>
+<div class="notice"><strong>Todo permanece en este ordenador</strong><p>La aplicación no usa servidor, cuenta ni base de datos. Si borras los datos del navegador o cambias de ordenador, puedes perder el contenido. Haz copias periódicas con las opciones de exportación e importación.</p></div>
+<section class="panel"><div class="panel-heading"><div><p class="eyebrow">COPIA DE SEGURIDAD</p><h2>Exportar e importar</h2></div></div><div class="settings-actions"><button id="backup-export" class="primary-button">Descargar copia completa (.json)</button><label class="secondary-button" for="backup-file">Restaurar copia (.json)</label><input class="visually-hidden" type="file" id="backup-file" accept="application/json,.json"></div><p class="fine-print">La restauración sustituye los datos locales actuales. Exporta primero una copia si quieres conservarlos.</p><hr><button id="clear-data" class="danger-button">Borrar todos los datos locales</button></section>
+</section>
+<footer class="app-footer"><span>BENISAT · MISIÓN: DESCUBRIR</span><button data-goto="ajustes">Datos locales y copias ↗</button></footer>
+</main></div><div id="toast" role="status" aria-live="polite"></div>
+</body></html>

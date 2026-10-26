@@ -11,21 +11,47 @@
 </head>
 <body>
 <div id="auth-gate" class="auth-gate">
-  <section class="auth-card" aria-labelledby="auth-title">
-    <div class="auth-brand"><span class="brand-mark">B<span>·</span></span><div><strong>BENISAT</strong><small>MISIÓN: DESCUBRIR</small></div></div>
-    <p class="eyebrow">ESPACIO PRIVADO DEL EQUIPO</p>
-    <h1 id="auth-title">Acceso al panel<span>.</span></h1>
-    <p class="auth-intro">Inicia sesión con la cuenta que te ha invitado el administrador de BENISAT.</p>
-    <form id="auth-form" class="auth-form">
-      <label for="auth-email">Correo electrónico</label>
-      <input id="auth-email" type="email" autocomplete="username" required placeholder="tu-correo@ejemplo.com">
-      <label for="auth-password">Contraseña</label>
-      <input id="auth-password" type="password" autocomplete="current-password" required placeholder="Tu contraseña">
-      <button id="auth-submit" class="primary-button" type="submit">Iniciar sesión</button>
-      <p id="auth-message" class="auth-message" role="status" aria-live="polite"></p>
-    </form>
-    <p class="auth-footnote">El registro público está deshabilitado. Solo pueden entrar cuentas añadidas por el administrador del equipo.</p>
-  </section>
+  <div class="auth-layout">
+    <section class="auth-story" aria-label="Misión BENISAT">
+      <a class="auth-brand" href="#" aria-label="BENISAT, inicio">
+        <span class="brand-mark">B<span>·</span></span>
+        <span class="auth-brand-copy"><strong>BENISAT</strong><small>MISIÓN: DESCUBRIR</small></span>
+      </a>
+      <div class="auth-story-copy">
+        <p class="auth-kicker"><span></span> CENTRO DE CONTROL · CANSAT 2026—2027</p>
+        <h1>La misión<br>empieza <em>aquí.</em></h1>
+        <p>Un equipo. Una misión. Todos los avances en un mismo lugar.</p>
+      </div>
+      <div class="auth-orbit-art" aria-hidden="true">
+        <div class="auth-orbit auth-orbit-one"></div>
+        <div class="auth-orbit auth-orbit-two"></div>
+        <div class="auth-orbit auth-orbit-three"></div>
+        <div class="auth-planet"></div>
+        <div class="auth-satellite"><span></span><i></i><b></b></div>
+        <span class="auth-star star-one">✦</span><span class="auth-star star-two">✧</span><span class="auth-star star-three">·</span>
+        <span class="auth-art-label">BENISAT / 26—27</span>
+      </div>
+      <div class="auth-story-footer"><span>EXPLORAR</span><span>MEDIR</span><span>APRENDER</span></div>
+    </section>
+    <section class="auth-card" aria-labelledby="auth-title">
+      <div class="auth-card-heading">
+        <p class="auth-kicker">ESPACIO PRIVADO DEL EQUIPO</p>
+        <h2 id="auth-title">Qué bueno tenerte<br>de vuelta<span>.</span></h2>
+        <p class="auth-intro">Entra con la cuenta que te ha facilitado el administrador del equipo.</p>
+      </div>
+      <form id="auth-form" class="auth-form">
+        <label for="auth-email">Correo electrónico</label>
+        <input id="auth-email" type="email" autocomplete="username" required placeholder="tu-correo@ejemplo.com">
+        <label for="auth-password">Contraseña</label>
+        <input id="auth-password" type="password" autocomplete="current-password" required placeholder="Introduce tu contraseña">
+        <button id="auth-submit" class="primary-button" type="submit">Entrar al panel <span aria-hidden="true">→</span></button>
+        <p id="auth-message" class="auth-message" role="status" aria-live="polite"></p>
+      </form>
+      <div class="auth-security"><span class="auth-lock" aria-hidden="true">✓</span><p><strong>Acceso exclusivo al equipo</strong><small>Solo pueden entrar miembros autorizados de BENISAT.</small></p></div>
+      <p class="auth-footnote">El registro público está deshabilitado. Si necesitas acceso, contacta con el administrador.</p>
+    </section>
+  </div>
+  <p class="auth-copyright">BENISAT · PROYECTO CANSAT 2026–2027</p>
 </div>
 
 <div class="app-shell">

@@ -89,7 +89,7 @@ async function loadWorkspace(user){
  document.body.classList.add("authenticated");
  $("#auth-gate").classList.remove("auth-loading");
  $("#signed-in-email").textContent=user.email||"";
- $("#connection-status").innerHTML="<i></i> SINCRONIZADO";
+ $("#connection-status").innerHTML=currentRole==="viewer"?"<i></i> SOLO LECTURA":"<i></i> SINCRONIZADO";
  $("#connection-status").classList.add("connected");
  $("#auth-message").textContent="";
  renderAll();
@@ -114,7 +114,13 @@ function renderDocs(){$("#stat-docs").textContent=data.docs.length;$("#documents
 function renderNotes(){$("#notes-list").innerHTML=data.notes.slice().reverse().map(n=>'<article class="note-card"><div><strong>'+esc(n.title)+'</strong><small>'+esc(fmtDate(n.date))+'</small><p>'+esc(n.body)+'</p></div><button class="delete-btn" data-note-delete="'+esc(n.id)+'" aria-label="Eliminar nota">×</button></article>').join("")||'<p class="empty-copy">Aún no hay notas científicas.</p>'}
 function renderExpenses(){const spend=data.expenses.filter(e=>e.type==="gasto").reduce((s,e)=>s+e.amount,0),income=data.expenses.filter(e=>e.type==="ingreso").reduce((s,e)=>s+e.amount,0),net=spend-income;$("#stat-spent").textContent=money(spend);$("#stat-remaining").textContent=money(500-net)+" disponibles";$("#spent-total").textContent=money(net);$("#remaining-total").textContent=money(500-net);$("#expenses-list").innerHTML=data.expenses.slice().reverse().map(e=>'<article class="expense-row"><div class="expense-copy"><strong>'+esc(e.title)+'</strong><small>'+(e.type==="gasto"?"Gasto":"Ingreso o aportación")+' · '+esc(fmtDate(e.date))+'</small></div><span class="expense-amount '+(e.type==="ingreso"?"income":"")+'">'+(e.type==="gasto"?"−":"+")+money(e.amount)+'</span><button class="delete-btn" data-expense-delete="'+esc(e.id)+'" aria-label="Eliminar movimiento">×</button></article>').join("")||'<p class="empty-copy">Todavía no hay movimientos registrados.</p>'}
 function renderPosts(){$("#posts-list").innerHTML=data.posts.slice().reverse().map(p=>'<article class="post-row"><div class="post-copy"><strong>'+esc(p.title)+'</strong><small>'+(p.date?fmtDate(p.date):"Fecha pendiente")+'</small></div><select class="status-select" data-post-status="'+esc(p.id)+'" aria-label="Estado"><option '+(p.status==="Idea"?"selected":"")+'>Idea</option><option '+(p.status==="Preparando"?"selected":"")+'>Preparando</option><option '+(p.status==="Publicado"?"selected":"")+'>Publicado</option></select><button class="delete-btn" data-post-delete="'+esc(p.id)+'" aria-label="Eliminar">×</button></article>').join("")||'<p class="empty-copy">Añade ideas para organizar la difusión.</p>'}
-function renderAll(){renderTasks();renderMilestones();renderDocs();renderNotes();renderExpenses();renderPosts()}
+function applyRolePermissions(){
+ const readOnly=currentRole==="viewer";
+ if(!document.body.classList.contains("authenticated"))return;
+ document.querySelectorAll("#view-inicio form,#view-tareas form,#view-hitos form,#view-documentacion form,#view-mision form,#view-presupuesto form,#view-difusion form").forEach(form=>form.querySelectorAll("input,textarea,select,button").forEach(el=>{el.disabled=readOnly}));
+ document.querySelectorAll("[data-task-toggle],[data-task-delete],[data-doc-status],[data-doc-delete],[data-note-delete],[data-expense-delete],[data-post-status],[data-post-delete],[data-milestone-delete],#add-milestone-btn,#clear-data,#backup-file").forEach(el=>{el.disabled=readOnly});
+}
+function renderAll(){renderTasks();renderMilestones();renderDocs();renderNotes();renderExpenses();renderPosts();applyRolePermissions()}
 $$(".nav-item").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));
 $$("[data-goto]").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.goto)));
 $("#mobile-menu").addEventListener("click",()=>$("#sidebar").classList.toggle("open"));

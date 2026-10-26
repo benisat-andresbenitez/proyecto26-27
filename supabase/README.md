@@ -37,3 +37,14 @@ Esta carpeta contiene la base de datos propuesta para compartir el panel de gest
 ## Siguiente fase
 
 Conectar el frontend existente a Supabase Auth y sustituir las lecturas/escrituras síncronas de `localStorage` por operaciones asíncronas contra estas tablas, con estados de carga, error y reintento. El frontend no debe mostrar éxito hasta recibir confirmación del servidor.
+
+
+## Conexión del panel web
+
+La interfaz del panel carga supabase-js desde CDN y usa el archivo assets/js/supabase-config.js con la URL y la clave publicable del proyecto. Esa clave está diseñada para uso en el navegador; nunca pongas una clave secret ni service_role en este archivo.
+
+El panel ya no lee ni importa automáticamente localStorage: tras iniciar sesión, consulta las seis tablas compartidas y los cambios se envían a Supabase. Las tablas empiezan vacías, incluidos los hitos. Las exportaciones JSON/CSV son copias manuales; restaurar un JSON es una acción explícita que sobrescribe registros compartidos.
+
+Antes de usar el panel, crea el primer usuario en Authentication → Users, configura su contraseña mediante la invitación, y añade su UUID como administrador en public.team_members siguiendo el paso 4 de instalación. Invita a los demás usuarios desde Supabase y añade cada UUID a team_members. No habilites el registro público.
+
+Si la API devuelve un error que indica que las tablas no están expuestas, abre la configuración de Data API y expón únicamente las tablas team_members, tasks, milestones, documents, scientific_notes, expenses y posts. RLS debe permanecer habilitado; no expongas la clave secreta.

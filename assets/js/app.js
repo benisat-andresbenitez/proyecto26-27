@@ -3,20 +3,9 @@
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 
-const defaultData = () => ({
- tasks:[], docs:[], expenses:[], notes:[], posts:[],
- milestones:[
-  {id:"pdr",title:"PDR · Revisión preliminar",date:"2026-12-18",note:"Fecha límite de referencia; revisar convocatoria.",fixed:true},
-  {id:"cdr",title:"CDR · Revisión crítica",date:"",note:"Fecha oficial de Andalucía pendiente.",fixed:true},
-  {id:"regional",title:"Fase regional",date:"",note:"Marzo–abril de 2027, previsión provisional.",fixed:true},
-  {id:"plr",title:"PLR · Payload Launch Review",date:"2027-04-30",note:"Solo si el equipo es seleccionado para la fase nacional.",fixed:true},
-  {id:"final",title:"Final nacional · Granada",date:"2027-05-12",note:"12–13 de mayo de 2027, fecha de referencia.",fixed:true},
-  {id:"estec",title:"Posible visita a ESA ESTEC",date:"2027-06-30",note:"30 de junio–2 de julio de 2027; condicionada a selección.",fixed:true}
- ]
-});
 function emptyData(){return {tasks:[],docs:[],expenses:[],notes:[],posts:[],milestones:[]}}
 let data=emptyData(),filter="pendientes",toastTimer;
-let syncedData=emptyData(),saveQueue=Promise.resolve(),currentUser=null,currentRole=null;
+let syncedData=emptyData(),saveQueue=Promise.resolve(),currentUser=null,currentRole=null,pendingSaveCount=0,deferredMessage="";
 const id=()=>globalThis.crypto?.randomUUID?crypto.randomUUID():String(Date.now())+Math.random().toString(16).slice(2);
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money=v=>new Intl.NumberFormat("es-ES",{style:"currency",currency:"EUR"}).format(v);
@@ -62,11 +51,20 @@ async function persistChanges(){
  syncedData=cloneData(data);
 }
 function save(){
- saveQueue=saveQueue.then(persistChanges).catch(error=>{
+ pendingSaveCount++;
+ saveQueue=saveQueue.then(persistChanges).then(()=>{
+  pendingSaveCount=Math.max(0,pendingSaveCount-1);
+  if(pendingSaveCount===0){
+   const message=deferredMessage||"Cambios sincronizados con Supabase.";
+   deferredMessage="";
+   notify(message);
+  }
+ }).catch(error=>{
+  pendingSaveCount=0;deferredMessage="";
   console.error("BENISAT sync error:",error);
   notify("No se ha podido sincronizar: "+(error.message||"comprueba tu conexión y permisos."));
  });
- return true;
+ return saveQueue;
 }
 async function loadWorkspace(user){
  currentUser=user;
@@ -105,7 +103,7 @@ function showAuth(message=""){
  $("#connection-status").classList.remove("connected");
  $("#signed-in-email").textContent="";
 }
-function notify(message){const el=$("#toast");el.textContent=message;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2600)}
+function notify(message){if(pendingSaveCount>0&&!/No se ha podido sincronizar|Introduce |Introduce un |válido|enlace válido/i.test(message)){deferredMessage=message;return}const el=$("#toast");el.textContent=message;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2600)}
 const viewNames={inicio:"Inicio",tareas:"Tareas",hitos:"Hitos",documentacion:"Documentación",mision:"Misión científica",presupuesto:"Presupuesto",difusion:"Difusión",ajustes:"Datos locales y copias"};
 function showView(name){if(!viewNames[name])name="inicio";$$(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+name));$$(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.view===name));$("#breadcrumb").textContent=viewNames[name];$("#sidebar").classList.remove("open");history.replaceState(null,"","#"+name);window.scrollTo({top:0,behavior:"smooth"})}
 function taskMarkup(t){return '<article class="task-row '+(t.done?"done":"")+'"><input class="task-check" type="checkbox" data-task-toggle="'+esc(t.id)+'" aria-label="Completar tarea" '+(t.done?"checked":"")+'><div class="task-copy"><strong>'+esc(t.title)+'</strong><small>'+esc(t.area||"General")+' · '+(t.due?"Fecha límite: "+fmtDate(t.due):"Añadida: "+esc(t.createdLabel||"Hoy"))+(t.done?" · Completada":"")+'</small></div><span class="priority '+(t.priority||"media")+'">'+({alta:"ALTA",media:"MEDIA",baja:"BAJA"}[t.priority||"media"])+'</span><button class="delete-btn" data-task-delete="'+esc(t.id)+'" aria-label="Eliminar tarea">×</button></article>'}
@@ -133,7 +131,7 @@ $("#expense-form").addEventListener("submit",e=>{e.preventDefault();const amount
 $("#post-form").addEventListener("submit",e=>{e.preventDefault();data.posts.push({id:id(),title:$("#post-title").value.trim(),status:$("#post-status").value,date:$("#post-date").value});save();renderPosts();e.target.reset();notify("Idea de publicación añadida.")});
 function download(filename,text,type="application/json"){const blob=new Blob([text],{type});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 $("#backup-export").addEventListener("click",()=>download("benisat-copia-"+today()+".json",JSON.stringify({version:1,exportedAt:new Date().toISOString(),data},null,2)));
-$("#backup-file").addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;try{const obj=JSON.parse(await file.text());const imported=obj.data||obj;if(!Array.isArray(imported.tasks)||!Array.isArray(imported.milestones))throw Error("formato");if(!confirm("La copia sustituirá todos los datos guardados en este navegador. ¿Continuar?"))return;const base=emptyData();data={...base,...imported};save();renderAll();notify("Copia restaurada correctamente.")}catch{notify("No se ha podido leer la copia. Comprueba que sea un JSON de BENISAT.")}finally{e.target.value=""}});
+$("#backup-file").addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;try{const obj=JSON.parse(await file.text());const imported=obj.data||obj;if(!Array.isArray(imported.tasks)||!Array.isArray(imported.milestones))throw Error("formato");if(!confirm("La copia sustituirá los datos compartidos de todo el equipo. ¿Continuar?"))return;const base=emptyData();data={...base,...imported};save();renderAll();notify("Copia restaurada correctamente.")}catch{notify("No se ha podido leer la copia. Comprueba que sea un JSON de BENISAT.")}finally{e.target.value=""}});
 $("#clear-data").addEventListener("click",()=>{if(!confirm("¿Seguro que quieres vaciar TODOS los datos compartidos de BENISAT para todo el equipo? Esta acción no se puede deshacer."))return;data=emptyData();save();renderAll();notify("Se ha solicitado vaciar los datos compartidos.")});
 function csvCell(v){return '"'+String(v??"").replace(/"/g,'""')+'"'}
 $("#export-finance").addEventListener("click",()=>{const rows=[["Concepto","Tipo","Importe EUR","Fecha"],...data.expenses.map(e=>[e.title,e.type,e.amount,e.date])];download("benisat-presupuesto-"+today()+".csv","\uFEFF"+rows.map(r=>r.map(csvCell).join(";")).join("\r\n"),"text/csv;charset=utf-8")});

@@ -5,9 +5,29 @@
 <meta name="theme-color" content="#641f32"><meta name="description" content="Panel de control local del equipo BENISAT, CanSat 2026–2027.">
 <title>BENISAT · Panel de control</title>
 <link rel="stylesheet" href="assets/css/app.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4"></script>
+<script src="assets/js/supabase-config.js"></script>
 <script src="assets/js/app.js" defer></script>
 </head>
 <body>
+<div id="auth-gate" class="auth-gate">
+  <section class="auth-card" aria-labelledby="auth-title">
+    <div class="auth-brand"><span class="brand-mark">B<span>·</span></span><div><strong>BENISAT</strong><small>MISIÓN: DESCUBRIR</small></div></div>
+    <p class="eyebrow">ESPACIO PRIVADO DEL EQUIPO</p>
+    <h1 id="auth-title">Acceso al panel<span>.</span></h1>
+    <p class="auth-intro">Inicia sesión con la cuenta que te ha invitado el administrador de BENISAT.</p>
+    <form id="auth-form" class="auth-form">
+      <label for="auth-email">Correo electrónico</label>
+      <input id="auth-email" type="email" autocomplete="username" required placeholder="tu-correo@ejemplo.com">
+      <label for="auth-password">Contraseña</label>
+      <input id="auth-password" type="password" autocomplete="current-password" required placeholder="Tu contraseña">
+      <button id="auth-submit" class="primary-button" type="submit">Iniciar sesión</button>
+      <p id="auth-message" class="auth-message" role="status" aria-live="polite"></p>
+    </form>
+    <p class="auth-footnote">El registro público está deshabilitado. Solo pueden entrar cuentas añadidas por el administrador del equipo.</p>
+  </section>
+</div>
+
 <div class="app-shell">
 <aside class="sidebar" id="sidebar">
   <a class="brand" href="#inicio"><span class="brand-mark">B<span>·</span></span><span class="brand-copy"><strong>BENISAT</strong><small>MISIÓN: DESCUBRIR</small></span></a>
@@ -24,7 +44,7 @@
   <div class="sidebar-footer"><i></i><div><strong>Temporada 2026–2027</strong><small>CanSat · Andalucía</small></div></div>
 </aside>
 <main class="main">
-<header class="topbar"><button id="mobile-menu" class="mobile-menu" aria-label="Abrir navegación">☰</button><div class="breadcrumbs">BENISAT <span>/</span> <strong id="breadcrumb">Inicio</strong></div><div class="topbar-right"><span class="local-label"><i></i> GUARDADO LOCAL</span><span class="avatar">AD</span></div></header>
+<header class="topbar"><button id="mobile-menu" class="mobile-menu" aria-label="Abrir navegación">☰</button><div class="breadcrumbs">BENISAT <span>/</span> <strong id="breadcrumb">Inicio</strong></div><div class="topbar-right"><span class="local-label" id="connection-status"><i></i> CONECTANDO</span><span id="signed-in-email" class="signed-in-email"></span><button id="auth-logout" class="logout-button" type="button">Salir</button></div></header>
 
 <section class="view active" id="view-inicio">
   <div class="page-heading"><div><p class="eyebrow">DE JEREZ AL ESPACIO</p><h1>Panel de control<span>.</span></h1><p class="intro">Toda la misión en un mismo lugar. Planifica, construye, prueba y descubre.</p></div><div class="season"><small>TEMPORADA</small><strong>2026 <b>—</b> 2027</strong><span>Equipo BENISAT</span></div></div>
@@ -125,9 +145,9 @@
   <section class="panel"><div class="panel-heading"><div><p class="eyebrow">PLAN DE PUBLICACIONES</p><h2>Ideas de contenido</h2></div></div><form id="post-form" class="task-form"><input id="post-title" placeholder="Idea o publicación" maxlength="140" required aria-label="Publicación"><select id="post-status" aria-label="Estado"><option>Idea</option><option>Preparando</option><option>Publicado</option></select><input id="post-date" type="date" aria-label="Fecha objetivo"><button class="primary-button" type="submit">Añadir idea</button></form><div id="posts-list"></div></section>
 </section>
 <section class="view" id="view-ajustes">
-<div class="page-heading compact"><div><p class="eyebrow">DATOS Y COPIAS</p><h1>Ajustes<span>.</span></h1><p class="intro">Controla la información guardada en este navegador.</p></div></div>
-<div class="notice"><strong>Todo permanece en este ordenador</strong><p>La aplicación no usa servidor, cuenta ni base de datos. Si borras los datos del navegador o cambias de ordenador, puedes perder el contenido. Haz copias periódicas con las opciones de exportación e importación.</p></div>
-<section class="panel"><div class="panel-heading"><div><p class="eyebrow">COPIA DE SEGURIDAD</p><h2>Exportar e importar</h2></div></div><div class="settings-actions"><button id="backup-export" class="primary-button">Descargar copia completa (.json)</button><label class="secondary-button" for="backup-file">Restaurar copia (.json)</label><input class="visually-hidden" type="file" id="backup-file" accept="application/json,.json"></div><p class="fine-print">La restauración sustituye los datos locales actuales. Exporta primero una copia si quieres conservarlos.</p><hr><button id="clear-data" class="danger-button">Borrar todos los datos locales</button></section>
+<div class="page-heading compact"><div><p class="eyebrow">DATOS Y COPIAS</p><h1>Ajustes<span>.</span></h1><p class="intro">Gestiona las copias de seguridad de los datos compartidos del equipo.</p></div></div>
+<div class="notice"><strong>Datos compartidos del equipo</strong><p>El panel guarda los cambios en la base de datos de BENISAT. Las copias JSON son archivos independientes; restaurar una copia modifica los datos compartidos y debe hacerse con autorización del equipo.</p></div>
+<section class="panel"><div class="panel-heading"><div><p class="eyebrow">COPIA DE SEGURIDAD</p><h2>Exportar e importar</h2></div></div><div class="settings-actions"><button id="backup-export" class="primary-button">Descargar copia completa (.json)</button><label class="secondary-button" for="backup-file">Restaurar copia (.json)</label><input class="visually-hidden" type="file" id="backup-file" accept="application/json,.json"></div><p class="fine-print">La restauración sustituye los datos locales actuales. Exporta primero una copia si quieres conservarlos.</p><hr><button id="clear-data" class="danger-button">Vaciar los datos compartidos</button></section>
 </section>
 <footer class="app-footer"><span>BENISAT · MISIÓN: DESCUBRIR</span><button data-goto="ajustes">Datos locales y copias ↗</button></footer>
 </main></div><div id="toast" role="status" aria-live="polite"></div>

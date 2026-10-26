@@ -141,6 +141,34 @@ $("#backup-file").addEventListener("change",async e=>{const file=e.target.files?
 $("#clear-data").addEventListener("click",()=>{if(!confirm("¿Seguro que quieres vaciar TODOS los datos compartidos de BENISAT para todo el equipo? Esta acción no se puede deshacer."))return;data=emptyData();save();renderAll();notify("Se ha solicitado vaciar los datos compartidos.")});
 function csvCell(v){return '"'+String(v??"").replace(/"/g,'""')+'"'}
 $("#export-finance").addEventListener("click",()=>{const rows=[["Concepto","Tipo","Importe EUR","Fecha"],...data.expenses.map(e=>[e.title,e.type,e.amount,e.date])];download("benisat-presupuesto-"+today()+".csv","\uFEFF"+rows.map(r=>r.map(csvCell).join(";")).join("\r\n"),"text/csv;charset=utf-8")});
+let recoveryMode=new URLSearchParams(location.hash.slice(1)).get("type")==="recovery";
+function showRecovery(message=""){
+ recoveryMode=true;
+ $("#auth-form").classList.add("hidden");
+ $("#recovery-form").classList.remove("hidden");
+ $("#auth-title").innerHTML="Crea tu nueva<br>contraseña<span>.</span>";
+ $("#recovery-message").textContent=message;
+ $("#auth-gate").classList.remove("auth-loading");
+}
+$("#recovery-form").addEventListener("submit",async e=>{
+ e.preventDefault();
+ const password=$("#new-password").value,confirmPassword=$("#confirm-password").value,button=$("#recovery-submit");
+ if(password.length<8){$("#recovery-message").textContent="La contraseña debe tener al menos 8 caracteres.";return}
+ if(password!==confirmPassword){$("#recovery-message").textContent="Las contraseñas no coinciden.";return}
+ button.disabled=true;button.textContent="Guardando…";$("#recovery-message").textContent="";
+ try{
+  const {error}=await window.benisatSupabase.auth.updateUser({password});
+  if(error)throw error;
+  await window.benisatSupabase.auth.signOut();
+  history.replaceState(null,"",location.pathname+location.search);
+  recoveryMode=false;
+  $("#recovery-form").classList.add("hidden");$("#auth-form").classList.remove("hidden");
+  $("#auth-title").innerHTML="Qué bueno tenerte<br>de vuelta<span>.</span>";
+  $("#auth-form").reset();$("#recovery-form").reset();
+  showAuth("Contraseña actualizada. Ya puedes entrar con tu nueva contraseña.");
+ }catch(error){console.error("BENISAT password recovery error:",error);$("#recovery-message").textContent=error.message||"No se ha podido actualizar la contraseña. Solicita un enlace nuevo."}
+ finally{button.disabled=false;button.innerHTML='Guardar contraseña <span aria-hidden="true">→</span>'}
+});
 $("#auth-form").addEventListener("submit",async e=>{
  e.preventDefault();
  const button=$("#auth-submit"),email=$("#auth-email").value.trim(),password=$("#auth-password").value;
@@ -166,12 +194,14 @@ async function initApp(){
  try{
   const {data:sessionData,error}=await window.benisatSupabase.auth.getSession();
   if(error)throw error;
+  if(recoveryMode){showRecovery("Introduce y confirma tu nueva contraseña.");return}
   if(sessionData.session)await loadWorkspace(sessionData.session.user);
   else showAuth("");
  }catch(error){console.error("BENISAT startup error:",error);showAuth(error.message||"No se ha podido conectar con Supabase.")}
 }
 window.benisatSupabase?.auth.onAuthStateChange((event)=>{
- if(event==="SIGNED_OUT"){currentUser=null;currentRole=null;showAuth("")}
+ if(event==="PASSWORD_RECOVERY"){showRecovery("Introduce y confirma tu nueva contraseña.");return}
+ if(event==="SIGNED_OUT"&&!recoveryMode){currentUser=null;currentRole=null;showAuth("")}
 });
 initApp();
 })();

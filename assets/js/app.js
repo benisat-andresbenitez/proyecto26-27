@@ -85,7 +85,20 @@ async function loadWorkspace(user){
   if(results[i].error)throw results[i].error;
   next[kinds[i]]=results[i].data.map(row=>fromRow(kinds[i],row));
  }
+ const seedMilestones=next.milestones.length===0&&currentRole!=="viewer";
+ if(seedMilestones){
+  next.milestones=[
+   {id:"cansat-2627-inscripcion",title:"Apertura de inscripciones CanSat 2026–2027",date:"2026-09-24",note:"Inicio del plazo de inscripción nacional según ESERO Spain.",fixed:true},
+   {id:"cansat-2627-cierre-inscripcion",title:"Fecha límite de inscripción del equipo",date:"2026-11-30",note:"Último día para inscribirse en el desafío CanSat Spain 2026–2027.",fixed:true},
+   {id:"cansat-2627-pdr",title:"Entrega del informe PDR",date:"2026-12-18",note:"Fecha límite de referencia para el Preliminary Design Review (PDR). Revisar las instrucciones oficiales de entrega.",fixed:true},
+   {id:"cansat-2627-cdr",title:"Entrega del informe CDR",date:"",note:"Fecha variable según la comunidad autónoma y su convocatoria regional. Confirmar con la organización autonómica.",fixed:true},
+   {id:"cansat-2627-regional",title:"Fase regional CanSat",date:"2027-03-15",note:"Las fases autonómicas se celebran entre marzo y abril de 2027; fecha orientativa, pendiente de confirmar para Andalucía.",fixed:true},
+   {id:"cansat-2627-nacional",title:"Final Nacional CanSat Spain 2027 · Granada",date:"2027-05-12",note:"Final nacional prevista para el 12 y 13 de mayo de 2027. Participan los equipos seleccionados en las fases autonómicas.",fixed:true},
+   {id:"cansat-2627-summit",title:"CanSat Space Engineering Summit · ESTEC",date:"2027-06-30",note:"Del 30 de junio al 2 de julio de 2027 en Noordwijk (Países Bajos), para los equipos ganadores nacionales invitados por la ESA.",fixed:true}
+  ];
+ }
  data=next;syncedData=cloneData(next);
+ if(seedMilestones)syncedData.milestones=[];
  document.body.classList.add("authenticated");
  $("#auth-gate").classList.remove("auth-loading");
  $("#signed-in-email").textContent=user.email||"";
@@ -93,6 +106,7 @@ async function loadWorkspace(user){
  $("#connection-status").classList.add("connected");
  $("#auth-message").textContent="";
  renderAll();
+ if(seedMilestones)save();
  const initial=location.hash.slice(1);if(viewNames[initial])showView(initial);
 }
 function showAuth(message=""){
